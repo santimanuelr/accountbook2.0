@@ -1,5 +1,6 @@
 package com.santidev.accountbook.model;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +13,7 @@ import java.io.Serializable;
  */
 @Document(collection = "user_account")
 @Data
+@Builder
 public class UserAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
