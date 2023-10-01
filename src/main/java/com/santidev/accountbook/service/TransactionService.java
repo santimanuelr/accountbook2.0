@@ -30,24 +30,20 @@ public class TransactionService {
 	}
 
 
-	public void customTransactionValidations(Transaction transaction) throws Exception {
+	public void customTransactionValidations(Transaction transaction) {
 		if (!DEBIT.equalsIgnoreCase(transaction.getType())) {
 			return;
 		}
 		List<Balance> balances = balanceRepository.findByAccountId(transaction.getIdUserAccount());
-		Optional<Balance> balance = Optional.ofNullable(balances.stream().findFirst().orElse(null));
-		if (balance.isPresent()) {
-			checkNegativeBalnce(balance.get(), transaction);
-		}
+		balances.stream().findFirst().ifPresent(b -> checkNegativeBalnce(b, transaction));
     }
 	
 
-	private void checkNegativeBalnce(Balance balance, Transaction transaction) throws Exception {
+	private void checkNegativeBalnce(Balance balance, Transaction transaction) {
 		if (balance.getTotal().subtract(transaction.getAmount()).compareTo(BigDecimal.ZERO) < 0) {
 			throw new NegativeBalanceException(HttpStatus.BAD_REQUEST, "Balnce can't reach negative values");
 		}
-		return;
-	}
+    }
 
 	public Transaction processTransaction(Transaction transaction) {
 		try {
