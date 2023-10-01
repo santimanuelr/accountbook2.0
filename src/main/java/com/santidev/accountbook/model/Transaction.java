@@ -17,6 +17,8 @@ import java.time.LocalDate;
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String DEBIT = "debit";
+    public static final String CREDIT = "credit";
 
     @Id
     private String id;

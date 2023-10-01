@@ -2,7 +2,6 @@ package com.santidev.accountbook.rest;
 
 import com.santidev.accountbook.model.Transaction;
 import com.santidev.accountbook.repository.TransactionRepository;
-import com.santidev.accountbook.rest.Exceptions.NegativeBalanceException;
 import com.santidev.accountbook.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -46,15 +45,7 @@ public class TransactionResource {
         if (transaction.getId() != null) {
         	throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A new transaction cannot already have an ID");
         }
-        try {
-			transactionService.customTransactionValidations(transaction);
-			transactionService.refreshBlance(transaction);
-		} catch (NegativeBalanceException e) {
-			throw e;
-		} catch (Exception ex) {
-			log.error("Fail in createTransaction", ex);
-		}
-        Transaction result = transactionRepository.save(transaction);
+        Transaction result = transactionService.processTransaction(transaction);
         return ResponseEntity.created(new URI("/api/transactions/" + result.getId()))
             .body(result);
     }
